@@ -7,15 +7,15 @@ let filesDownloadStarted = 0;
 let filesDownloadCompleted = 0;
 
 
-const baseUrl = 'https://www.reddit.com/r/watchpeopledie/top.json?limit=100&t=all';
+const baseUrl = 'https://www.reddit.com/r/subreddit/top.json?limit=100&t=all';
 const client = new Client({
   database: 'reddit'
 });
 
 client.connect();
 
-function request(after = '') {
-  return superagent.get(baseUrl)
+function request(subreddit, after = '') {
+  return superagent.get(baseUrl.replace('subreddit', subreddit))
     .query({ after })
     .then(handleResponse)
 }
@@ -32,7 +32,7 @@ function handleResponse(res) {
   });
   console.log(`${count} entries processed`);
   if (count === 500) return;
-  if (res.body.data.after) request(res.body.data.after);
+  if (res.body.data.after) request(subreddit, res.body.data.after);
 }
 
 function downloadImgur(post) {
@@ -63,4 +63,4 @@ function downloadGfyCat(post) {
   });
 }
 
-request();
+// request(subreddit);
